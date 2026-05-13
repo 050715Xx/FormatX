@@ -110,22 +110,22 @@ class App(ctk.CTk):
 
     # ── 窗口图标 ───────────────────────────────────────────────
     def _set_icon(self):
-        # 依次尝试：sys._MEIPASS（PyInstaller 打包）→ 本地 → 临时文件兜底
-        candidates = []
+        # 优先用 sys._MEIPASS 的 3.ico
         if getattr(sys, '_MEIPASS', ''):
-            candidates.append(os.path.join(sys._MEIPASS, '3.ico'))
-        candidates += [
-            os.path.join(os.path.dirname(sys.executable), '3.ico'),
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), '3.ico'),
-        ]
-        for p in candidates:
+            p = os.path.join(sys._MEIPASS, '3.ico')
             if os.path.exists(p):
                 try:
                     self.iconbitmap(p)
                     return
                 except Exception:
                     pass
-        # 最终兜底
+        # PyInstaller --icon 嵌入在 exe 里，直接读自身上
+        try:
+            self.iconbitmap(sys.executable)
+            return
+        except Exception:
+            pass
+        # 兜底：内嵌 ico 数据写临时文件
         try:
             tf = tempfile.NamedTemporaryFile(suffix='.ico', delete=False)
             tf.write(_make_ico_data())
