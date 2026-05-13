@@ -80,6 +80,13 @@ class ConsoleLog(ctk.CTkTextbox):
 # ── 主窗口 ────────────────────────────────────────────────────
 class App(ctk.CTk):
     def __init__(self):
+        # 强制声明 Windows AppID，解除任务栏图标与 Python 默认图标的绑定
+        try:
+            import ctypes
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(
+                'yimin.formatx.v1.0')
+        except Exception:
+            pass
         super().__init__()
         self.title(APP_TITLE)
         self.geometry(APP_SIZE)
