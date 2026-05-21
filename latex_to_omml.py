@@ -262,9 +262,9 @@ class LatexParser:
 
     def _wrap_script(self, base, sub, sup):
         """用 m:sSup / m:sSub / m:sSubSup 包裹 base + scripts。"""
-        if sub and sup:
+        if sub is not None and sup is not None:
             elem = _omml_element('sSubSup')
-        elif sup:
+        elif sup is not None:
             elem = _omml_element('sSup')
         else:
             elem = _omml_element('sSub')
@@ -294,7 +294,7 @@ class LatexParser:
         return elem
 
     def _parse_atom(self):
-        """解析一个原子表达式（花括号组 / 命令 / 普通字符）。"""
+        """解析一个原子表达式（花括号组 / 命令 / 隐式括号 / 普通字符）。"""
         t = self.peek()
         if t is None:
             return None
@@ -309,12 +309,50 @@ class LatexParser:
         if t == '&':
             self.consume()
             return None
+        # 隐式括号：(...) / [...] → 视为分组，使 ^2 挂在整组上
+        if t in ('(', '['):
+            delim = t
+            close = ')' if t == '(' else ']'
+            return self._parse_implicit_group(delim, close)
         if t.startswith('\\'):
             self.consume()
             return self._process_command(t)
         # 普通字符
         self.consume()
         return _omml_run(t)
+
+    def _parse_implicit_group(self, open_delim, close_delim):
+        """解析 (...) 或 [...] 隐式分组，使 ^2 能挂在整组上。"""
+        self.consume()  # open_delim
+        depth = 1
+        inner_tokens = []
+        while self.pos < len(self.tokens) and depth > 0:
+            t = self.peek()
+            if t == open_delim:
+                depth += 1
+            elif t == close_delim:
+                depth -= 1
+                if depth == 0:
+                    break
+            if depth > 0:
+                inner_tokens.append(t)
+            self.pos += 1
+        self.consume()  # close_delim
+
+        # 用 OMML <m:d> 包裹（和 \left...\right 一样结构）
+        d = _omml_element('d')
+        dPr = _omml_element('dPr')
+        for side, ch in [('begChr', open_delim), ('endChr', close_delim)]:
+            el = _omml_element(side)
+            el.set(qn('m:val'), ch)
+            dPr.append(el)
+        d.append(dPr)
+        e = _omml_element('e')
+        for el in LatexParser(inner_tokens).parse():
+            if isinstance(el, etree._Element):
+                e.append(el)
+        d.append(e)
+        return d
 
     def _parse_group(self):
         self.consume()  # {
@@ -592,7 +630,7 @@ def replace_latex_with_omml(paragraph):
     遍历 paragraph 的所有 run，将其中 LaTeX 公式替换为 OMML。
     含公式的段落行距改为"至少 20 磅"，防止高公式与上下行重叠。
     """
-    full_text = paragraph.text
+    full_text = paragraph.text.replace('＄', '$')
     if '$' not in full_text:
         return False
     for run in list(paragraph.runs):

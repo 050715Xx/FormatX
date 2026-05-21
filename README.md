@@ -1,127 +1,166 @@
-<div align="center">
-  <h1>FormatX</h1>
-  <p><b>专治『AI 复制粘贴综合征』的小小招式</b></p>
-  <p>
-    <a href="https://github.com/050715Xx/FormatX/blob/main/LICENSE">
-      <img src="https://img.shields.io/badge/License-GPL_3.0-blue.svg" alt="License">
-    </a>
-    <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg" alt="Platform">
-  </p>
-</div>
+# FormatX — 自动化排版与可编辑公式解析器
 
+一键将 Markdown / 纯文本 / Word 文档转换为严格排版的 `.docx`，支持 LaTeX 数学公式转 Word 原生公式。
 
+## 功能
 
+- **多格式输入**：`.md` `.txt` `.docx` 均可作为输入
+- **Markdown 解析**：`#` `##` `###` 标题、`` ``` `` 代码块自动识别
+- **纯文本智能识别**：`第X章` `1.` `1.1` `一、` `摘要` 等编号自动转为标题层级
+- **LaTeX → Word 公式**：`$\frac{a}{b}$` `\sqrt{x}` `\int_0^1` 转为 Word 原生 OMML 公式（根号带横线、分数有分数线、积分有上下限）
+- **中英混排**：中文宋体 + 英文/数字 Times New Roman 自动分流
+- **表格保留**：`.docx` 重格式化时表格自动深拷贝，并统一对齐、字号、边距
+- **图片保留**：`.docx` 中的图片/Visio 绘图等深拷贝保留
+- **自动编号提取**：Word 自动编号（`1. / 1.1 / 1.1.1`）自动解析并转换为文本
+- **封面预留**：Markdown 输入自动生成空白封面页
 
-##   首先说明,这并不是给专家用的复杂工具，而是为每一位受过格式折磨的大学生设计的小小妙招。它能看懂大模型的 LaTeX 语言，并将它们转化为原生 Word 公式。AI 负责思考，FormatX 负责体面。
+## 排版规范
 
-FormatX 是一个微型的本地化自动化排版与可编辑公式解析工具。
+| 元素 | 字体 | 字号 | 加粗 | 对齐 |
+|------|------|------|:--:|:--:|
+| 一级标题 (`#` / `第X章`) | 宋体 | 16pt (三号) | ✅ | `第X章` 居中 |
+| 二级标题 (`##` / `1.1`) | 宋体 | 14pt (四号) | ✅ | 左对齐 |
+| 三级标题 (`###` / `1.1.1`) | 宋体 | 12pt (小四) | ✅ | 左对齐 |
+| 正文 | 宋体 + TNR | 12pt (小四) | — | 两端对齐 |
+| 代码块 | Times New Roman | 11pt | — | 左对齐 |
+| 表格 | — | 10.5pt (五号) | — | 上下左右居中 |
 
+- 行距：固定 20 磅
+- 正文首行缩进：2 字符（0.85cm）
+- 一级/二级标题段前段后：0.5 行
 
+## 安装
 
-* **作为助手，它是极简的**：不需要配置复杂的排版参数，不需要学习晦涩的 Word 样式逻辑。
+```bash
+pip install python-docx customtkinter lxml pillow tkinterdnd2
+```
 
-* **作为引擎，它是严谨的**：清除脏文本、拆解软回车、识别层级结构、区分中英文字体，并能将纯文本代码转化为真实的数学公式。
+## 使用
 
+### GUI 桌面应用
 
+```bash
+python gui_main.py
+```
 
-我开这个项目的初衷是：让大学生们在忙碌的大学生活中能轻松一点。无论你是在准备考研高数、撰写实验报告，还是整理项目文档，FormatX 都能让排版不再占用您宝贵的创作时间。
+- 📂 文件上传 — 选择 `.md` / `.docx` 文件
+- ✏️ 文本输入 — 直接粘贴 Markdown 内容
+- 输出模式 — 导出 `.docx` 或直接打开预览
 
+### 命令行
 
+```bash
+python format_conversion.py input.md output.docx
+python format_conversion.py input.docx output.docx
+```
 
-## ✨ 功能特性
+不带参数则弹出文件选择框；拖拽文件到 `FormatX.exe` 上自动生成 `*_formatted.docx`。
 
+### Web 服务
 
+```bash
+pip install flask
+python web_app.py
+```
 
-* **原生数学公式解析** — 像考研复习高等数学时，你可以把 Gemini、豆包、DeepSeek 等 AI 生成的包含 LaTeX 的解题过程直接复制进来。FormatX 会将它们识别并转化为 Word 中真正可以双击修改的原生公式（OMML），分数有横线，积分有上下限。
+手机同 WiFi 下浏览器访问 `http://电脑IP:5050`，Safari/Chrome 添加到主屏幕即可像 App 使用（PWA）。
 
-* **一键规范化排版** — 写实验报告或相关论文时，无需边写边调格式。直接丢入草稿，它会一键变成规范模板：严格的宋体/Times New Roman 中英分流、固定 20 磅行距、首行缩进 2 字符、标题自动加粗。
+## Markdown 语法
 
-* **代码与正文隔离** — 计算机专业学生在写文档时，只需用 ``` 将代码包裹，程序便会自动赋予代码等宽字体，保留原有缩进，并确保它不会和普通正文格式互相干扰。
+```markdown
+# 一级标题
+## 二级标题
+### 三级标题
 
-* **底层排版纠错** — 清理“Word 排版灾难”。自动修复因“软回车”（Shift+Enter）导致的字间距异常拉大问题，并自动剔除网页复制带来的零宽字符。
+正文段落。公式 $\int_0^1 x dx$ 转 Word 原生公式。
 
-* **纯文本智能嗅探** — 即使你不懂 Markdown，只要写了“第一章”、“1.1”或“摘要”，正则引擎都会自动识别并将其提拔为对应的标题层级。
+​```python
+print('代码块')
+​```
+```
 
-* **桌面与 Web 双模式** — 提供基于 CustomTkinter 的深色模式桌面 GUI，同时内置 Flask Web 方案，支持作为 PWA 部署在局域网内使用。
+纯文本自动识别（即使没有 `#` 标记）：
 
+| 输入 | 识别为 |
+|------|--------|
+| `第一章 概述` | 一级标题（居中 + 新页） |
+| `1. 项目背景` | 一级标题 |
+| `1.1 市场分析` | 二级标题 |
+| `1.1.1 数据来源` | 三级标题 |
+| `一、研究意义` | 二级标题 |
+| `摘要` / `Abstract` | 一级标题（居中 + 新页） |
 
+## LaTeX 公式支持
 
-## 📸 截图
+公式用 `$...$`（行内）或 `$$...$$`（块级）包裹：
 
-
-
-示例1:
-
-
-
-*<img width="1695" height="779" alt="586db53729300dddc5c6973ab7416a61" src="https://github.com/user-attachments/assets/3de818f1-f43b-4948-baff-b4ef45f45954" />*
-
-
-
-
-
-示例2:
-
-
-
-*<img width="1749" height="768" alt="abc7939d185df498eef8061c39a07efb" src="https://github.com/user-attachments/assets/d2494d50-2720-4322-8fcc-d2952cf12350" />*
-
-
-
-
-
-## 🚀 快速开始
-
-
-
-### 下载安装
-
-
-
-* **Windows**：从 [Releases](../../releases) 下载最新的 `FormatX.exe`。
-
-    > **Windows SmartScreen 提示**：由于软件未经过昂贵的代码签名，首次运行时可能会被拦截。请点击 **“更多信息” → “仍要运行”**。这是开源软件的正常现象。
-
-* **macOS / Linux**：目前建议直接通过 Python 源码运行。
-
-
-
-### 首次运行
-
-
-
-1. 下载 `.exe` 后直接双击打开，无需安装过程。
-
-2. 在界面中点击“浏览”选择文件，或点击“文本输入”粘贴 AI 复制的解答。
-
-3. 点击“一键开始排版”，完成后即可在同目录下获取格式化后的 `.docx` 文档。
-   
-4. 建议使用文档上传,文本输入作为v1.2.0发布。
-
----
-
-### 🌟 共同进化
-
-**FormatX** 还在不断进化中。
-* 如果你觉得它还不错，欢迎点个 **Star** 收藏，这是对开发者最大的鼓励！
-* 如果你有更好的想法，或者遇到了奇怪的 Bug，欢迎随时提 [Issue](../../issues)。
-
-让我们一起，让排版变得更体面。
-
-
-
-## 🏗️ 架构
-
-```text
-
-format_conversion.py   # 核心排版引擎（段落拆分、角色判定、字体约束、格式重写）
-
-latex_to_omml.py       # 公式解析库（将 LaTeX token 流转化为 Word 底层 XML 树）
-
-gui_main.py            # 桌面端 GUI（基于 CustomTkinter，多线程调度）
-
-web_app.py             # 局域网 Web 服务（基于 Flask，支持 PWA 桌面化）
-
-2.ico / 2.png          # UI 图标与视觉资产
-
-
+- **分数**：`\frac{a}{b}` → (a)/(b)
+- **根号**：`\sqrt{x}` → √(x)
+- **积分**：`\int_0^1` → ∫₀¹
+- **求和**：`\sum_{i=1}^n` → Σⁿᵢ₌₁
+- **希腊字母**：`\alpha \beta \gamma \pi \theta \Delta \Sigma`
+- **函数**：`\sin \cos \tan \arcsin \log \ln \lim`
+- **运算符**：`\times \cdot \div \pm \oplus \otimes`
+- **关系符**：`\approx \neq \leq \geq \equiv \to \implies`
+- **重音**：`\bar{A} \hat{x} \tilde{y} \vec{v} \dot{x}`
+- **括号**：`\left( \right)` — 自动适应高度
+
+所有公式均可选转为 **Word 原生公式**（OMML）——根号带横线、分数有分数线、积分有上下限，渲染效果与 Word 公式编辑器一致。
+
+## AI 内容清洗管线
+
+针对 DeepSeek / 豆包 / Kimi / ChatGPT 等 AI 平台输出，引擎内置多道清洗：
+
+- **强力反转义**：修复 AI 过度转义的 Markdown（`\*\*bold\*\*` → `**bold**`、`1\.` → `1.`、`\[链接\]` → `[链接]`）
+- **DeepSeek 思考剥离**：自动移除 `<think>...</think>` 标签
+- **豆包公式修复**：`\$\$` 转义还原、`\[...\]` 统一为 `$$...$$`
+- **重影去重**：消除网页剪贴板造成的长重复短语（`velocityvelocity` → `velocity`）
+- **零宽字符清洗**：移除不可见 Unicode 干扰字符
+- **纯文本 `**` 解析**：`.md` 模式下的 `**加粗**` 自动转为 Word 原生加粗
+
+## 关键设计
+
+| 机制 | 说明 |
+|---|---|
+| **四级加粗回退** | 直接格式 → 字符样式（Strong）→ 段落样式 → 默认 |
+| **冒号雷达** | 全段加粗时以冒号为界，前半保留加粗、后半降级细体 |
+| **XML 自动编号探测** | 读取 `w:numPr` 节点识别 Word 原生列表 |
+| **表格 sectPr 前置插入** | 表格插入到 `<w:sectPr>` 之前，解决表格沉底 |
+| **所见即所得** | 禁用 Word 原生自动编号追加，标题前缀不切除 |
+| **延迟导入** | `table_processor.py` 函数内 `import`，规避循环依赖 |
+
+## 打包为 .exe
+
+项目使用 PyInstaller spec 文件管理打包配置，自动收集所有依赖：
+
+```bash
+# GUI 桌面版（无控制台窗口，29MB）
+pyinstaller FormatX.spec
+
+# 命令行版（带控制台，15.7MB）
+pyinstaller FormatX-CLI.spec
+
+# Web 服务器版（带控制台显示访问地址，15.3MB）
+pyinstaller WebApp.spec
+```
+
+每个 spec 自动打包 `format_conversion.py` / `latex_to_omml.py` / `table_processor.py` / `Montserrat-Bold.ttf` / `3.ico`，GUI 版额外收集 `customtkinter` + `tkinterdnd2` 的二进制数据。
+
+## 项目结构
+
+```
+format_conversion.py   — 核心排版引擎（Markdown 解析 + .docx 重格式化 + AI 清洗管线）
+latex_to_omml.py       — LaTeX → Word OMML 公式转换器
+table_processor.py     — Markdown 表格渲染插件（延迟导入，零循环依赖）
+gui_main.py            — 桌面 GUI（CustomTkinter + tkinterdnd2 拖拽）
+web_app.py             — Web 服务（Flask + PWA）
+FormatX.spec           — GUI 版 PyInstaller 打包配置
+FormatX-CLI.spec       — CLI 版 PyInstaller 打包配置
+WebApp.spec            — Web 版 PyInstaller 打包配置
+3.ico                  — 应用图标
+Montserrat-Bold.ttf    — 英文标题字体
+```
+
+## 许可
+
+MIT

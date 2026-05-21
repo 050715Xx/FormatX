@@ -254,7 +254,9 @@ def api_convert():
         try:
             from format_conversion import convert_markdown_to_docx
             convert_markdown_to_docx(md_path, docx_path)
-            return send_file(docx_path, as_attachment=True,
+            with open(docx_path, 'rb') as f:
+                file_data = f.read()
+            return send_file(BytesIO(file_data), as_attachment=True,
                              download_name='output.docx',
                              mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
         finally:
@@ -278,7 +280,9 @@ def api_convert():
         else:
             from format_conversion import convert_markdown_to_docx
             convert_markdown_to_docx(input_path, output_path)
-        return send_file(output_path, as_attachment=True,
+        with open(output_path, 'rb') as f:
+            file_data = f.read()
+        return send_file(BytesIO(file_data), as_attachment=True,
                          download_name=os.path.basename(output_path),
                          mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
     finally:

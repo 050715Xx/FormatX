@@ -23,11 +23,11 @@ _ICON_B64 = None  # 打包时由 build 脚本注入，或运行时从文件读�
 # ── 从 format_conversion 导入核心函数 ──────────────────────────
 try:
     from format_conversion import (convert_markdown_to_docx, reformat_docx,
-                                     convert_text_to_docx)
+                                     convert_text_to_docx, _detect_suspicious_vars)
 except ImportError:
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     from format_conversion import (convert_markdown_to_docx, reformat_docx,
-                                     convert_text_to_docx)
+                                     convert_text_to_docx, _detect_suspicious_vars)
 
 
 # ── 配置 ──────────────────────────────────────────────────────
@@ -170,6 +170,15 @@ class App(ctk.CTk):
                      text_color="gray"
                      ).pack(pady=(0, 10))
 
+        # 右上角暖茶灰温馨寄语
+        ctk.CTkLabel(
+            self,
+            text="满怀希望，\n就会所向披靡 ✨",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=14, slant="italic"),
+            text_color="#B0A8A0",
+            justify="right"
+        ).place(relx=0.96, rely=0.03, anchor="ne")
+
         # ── 选项卡 ──
         tab_row = ctk.CTkFrame(self, fg_color="transparent")
         tab_row.pack(fill="x", padx=16, pady=(0, 4))
@@ -242,6 +251,13 @@ class App(ctk.CTk):
             hover_color=BTN_HOVER
         )
         browse_btn.grid(row=0, column=1)
+
+        new_file_btn = ctk.CTkButton(
+            entry_row, text="新建空白.md", width=90,
+            command=self._create_blank_md,
+            fg_color="#28a745", hover_color="#218838"
+        )
+        new_file_btn.grid(row=0, column=2, padx=(5, 0))
 
         # 输出路径
         out_label_row = ctk.CTkFrame(file_frame, fg_color="transparent")
@@ -369,6 +385,24 @@ class App(ctk.CTk):
             self.out_entry.insert(0, path)
             self._log(f'  输出指定: {os.path.basename(path)}')
 
+    def _create_blank_md(self):
+        """一键新建空白中转站，并自动填入路径"""
+        path = filedialog.asksaveasfilename(
+            title="新建 AI 输出中转文件",
+            initialfile="AI输出中转站.md",
+            defaultextension=".md",
+            filetypes=[("Markdown 文档", "*.md")]
+        )
+        if path:
+            try:
+                with open(path, 'w', encoding='utf-8') as f:
+                    f.write("\n\n")
+                self._set_input_path(path)
+                os.startfile(path)
+                self._log(f'  📝 已打开中转站！粘贴并保存后，即可点击排版。')
+            except Exception as e:
+                self._log(f'  ❌ 中转站创建失败: {str(e)}')
+
     # ── 按钮状态 ────────────────────────────────────────────────
     def _update_go_btn(self):
         if self.file_entry.get().strip():
@@ -397,7 +431,7 @@ class App(ctk.CTk):
                 return
             ext = os.path.splitext(input_path)[1].lower()
             if self.same_dir_var.get():
-                output_path = input_path.replace(ext, '_formatted.docx')
+                output_path = os.path.splitext(input_path)[0] + '_formatted.docx'
             else:
                 output_path = self.out_entry.get().strip()
                 if not output_path.endswith('.docx'):
@@ -436,6 +470,9 @@ class App(ctk.CTk):
                 self._log('  文本模式：转换中...')
                 convert_text_to_docx(text, output_path)
                 self._log(f'  ✅ 已导出 {os.path.abspath(output_path)}')
+                # 变量名异常检测
+                for li, var, msg in _detect_suspicious_vars(text):
+                    self._log(f'  ⚠️ 行{li}: [{var}] — {msg}')
             else:
                 self._log(f'  开始处理: {os.path.basename(input_path)}')
                 if ext == '.docx':
