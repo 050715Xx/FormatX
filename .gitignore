@@ -1,0 +1,15 @@
+build/
+dist/
+__pycache__/
+*.exe
+*.docx
+*.jpg
+
+# 临时/备用 spec（保留正式的三份）
+FormatX_tmp.spec
+
+# AI 密钥
+ai_config.json
+
+# IDE
+.claude/

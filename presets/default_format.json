@@ -1,0 +1,59 @@
+{
+  "name": "默认通用格式",
+  "styles": {
+    "normal": {
+      "font_cn": "宋体",
+      "font_en": "Times New Roman",
+      "size_pt": 12.0, "bold": false, "italic": false,
+      "alignment": "justify",
+      "first_line_indent_cm": 0.85, "left_indent_cm": 0.0,
+      "hanging_indent_cm": 0.0, "line_spacing_pt": 20.0,
+      "space_before_pt": 0.0, "space_after_pt": 0.0
+    },
+    "heading1": {
+      "font_cn": "黑体", "font_en": "Arial",
+      "size_pt": 16.0, "bold": true, "italic": false,
+      "alignment": "center",
+      "first_line_indent_cm": 0.0, "left_indent_cm": 0.0,
+      "line_spacing_pt": 20.0,
+      "space_before_pt": 10.0, "space_after_pt": 10.0
+    },
+    "heading2": {
+      "font_cn": "黑体", "font_en": "Arial",
+      "size_pt": 14.0, "bold": true, "italic": false,
+      "alignment": "left",
+      "first_line_indent_cm": 0.0, "left_indent_cm": 0.0,
+      "line_spacing_pt": 20.0,
+      "space_before_pt": 6.0, "space_after_pt": 6.0
+    },
+    "heading3": {
+      "font_cn": "黑体", "font_en": "Arial",
+      "size_pt": 12.0, "bold": true, "italic": false,
+      "alignment": "left",
+      "first_line_indent_cm": 0.0, "left_indent_cm": 0.0,
+      "line_spacing_pt": 20.0,
+      "space_before_pt": 4.0, "space_after_pt": 4.0
+    },
+    "code_block": {
+      "font_en": "Consolas", "size_pt": 11.0,
+      "first_line_indent_cm": 0.0, "line_spacing_pt": 20.0,
+      "alignment": "left"
+    },
+    "references_body": {
+      "font_cn": "宋体", "font_en": "Times New Roman",
+      "size_pt": 10.5, "bold": false, "italic": false,
+      "alignment": "left",
+      "first_line_indent_cm": -0.74, "left_indent_cm": 0.74,
+      "hanging_indent_cm": 0.74, "line_spacing_pt": 20.0,
+      "space_before_pt": 0.0, "space_after_pt": 0.0
+    },
+    "caption": {
+      "font_cn": "宋体", "font_en": "Times New Roman",
+      "size_pt": 10.5, "bold": false, "italic": false,
+      "alignment": "center",
+      "first_line_indent_cm": 0.0, "left_indent_cm": 0.0,
+      "line_spacing_pt": 20.0,
+      "space_before_pt": 6.0, "space_after_pt": 6.0
+    }
+  }
+}
